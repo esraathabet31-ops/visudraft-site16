@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flight Search Prototype</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Custom styles for specific sketch details */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+        }
+        
+        /* Hide scrollbar for clean mobile look */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* Smooth fade transition for screens */
+        .fade-in {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="h-screen w-full flex items-center justify-center">
+
+    <!-- Mobile Frame Container -->
+    <div class="relative w-full max-w-md h-full max-h-[850px] bg-white shadow-2xl sm:rounded-[3rem] sm:border-[8px] sm:border-gray-800 overflow-hidden flex flex-col">
+        
+        <!-- Top Notch / Speaker (Visual only, for mobile feel) -->
+        <div class="hidden sm:block absolute top-0 left-1/2 transform -translate-x-1/2 w-32 h-6 bg-gray-800 rounded-b-xl z-20"></div>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 overflow-y-auto no-scrollbar relative w-full bg-white">
+            
+            <!-- SCREEN 1: SEARCH FORM -->
+            <div id="screen-search" class="p-8 pt-12 h-full flex flex-col fade-in">
+                
+                <!-- Header -->
+                <div class="mb-8">
+                    <h1 class="text-xl font-bold text-gray-800 tracking-wide">LOGO</h1>
+                </div>
+
+                <h2 class="text-3xl text-center font-medium text-gray-800 mb-8 font-sans">Lorem Ipsum</h2>
+
+                <!-- Form -->
+                <form id="flight-form" class="space-y-5 flex-1" onsubmit="event.preventDefault(); navigateTo('results');">
+                    
+                    <!-- From -->
+                    <div class="space-y-1">
+                        <label for="from-input" class="block text-sm font-medium text-gray-700">From</label>
+                        <div class="relative">
+                            <input type="text" id="from-input" name="from" placeholder="City or Airport" 
+                                class="w-full border border-gray-400 rounded-md py-2 px-3 pr-10 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow">
+                            <div class="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none text-gray-500 border-l border-gray-300 bg-gray-50">
+                                <i class="fas fa-caret-down"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- To -->
+                    <div class="space-y-1">
+                        <label for="to-input" class="block text-sm font-medium text-gray-700">To</label>
+                        <div class="relative">
+                            <input type="text" id="to-input" name="to" placeholder="City or Airport" 
+                                class="w-full border border-gray-400 rounded-md py-2 px-3 pr-10 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow">
+                            <div class="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none text-gray-500 border-l border-gray-300 bg-gray-50">
+                                <i class="fas fa-caret-down"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Dates Row -->
+                    <div class="grid grid-cols-2 gap-4">
+                        <!-- Fly out -->
+                        <div class="space-y-1">
+                            <label for="fly-out" class="block text-sm font-medium text-gray-700">Fly out</label>
+                            <div class="flex shadow-sm">
+                                <input type="text" id="fly-out" placeholder="Select Date" onfocus="(this.type='date')"
+                                    class="w-full border border-gray-400 rounded-l-md py-2 px-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                <span class="inline-flex items-center px-3 rounded-r-md border border-l-0 border-gray-400 bg-gray-50 text-gray-500">
+                                    <i class="far fa-calendar-alt"></i>
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Fly back -->
+                        <div class="space-y-1">
+                            <label for="fly-back" class="block text-sm font-medium text-gray-700">Fly back</label>
+                            <div class="flex shadow-sm">
+                                <input type="text" id="fly-back" placeholder="Select Date" onfocus="(this.type='date')"
+                                    class="w-full border border-gray-400 rounded-l-md py-2 px-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                <span class="inline-flex items-center px-3 rounded-r-md border border-l-0 border-gray-400 bg-gray-50 text-gray-500">
+                                    <i class="far fa-calendar-alt"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Passengers Row -->
+                    <div class="grid grid-cols-2 gap-4">
+                        <!-- Adults -->
+                        <div class="space-y-1">
+                            <label for="adults" class="block text-sm font-medium text-gray-700">Adults</label>
+                            <div class="relative">
+                                <input type="number" id="adults" value="1" min="1"
+                                    class="w-full border border-gray-400 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <!-- Custom arrows visual simulation -->
+                                <div class="absolute inset-y-0 right-1 flex flex-col justify-center pointer-events-none">
+                                    <i class="fas fa-caret-up text-xs text-gray-500 -mb-1"></i>
+                                    <i class="fas fa-caret-down text-xs text-gray-500"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Children -->
+                        <div class="space-y-1">
+                            <label for="children" class="block text-sm font-medium text-gray-700">Children</label>
+                            <div class="relative">
+                                <input type="number" id="children" value="0" min="0"
+                                    class="w-full border border-gray-400 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <div class="absolute inset-y-0 right-1 flex flex-col justify-center pointer-events-none">
+                                    <i class="fas fa-caret-up text-xs text-gray-500 -mb-1"></i>
+                                    <i class="fas fa-caret-down text-xs text-gray-500"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Spacer to push button down -->
+                    <div class="pt-8">
+                        <button type="submit" class="w-full bg-white border-2 border-gray-800 text-gray-900 font-bold py-3 px-4 rounded shadow-sm hover:bg-gray-50 active:bg-gray-100 transition-colors uppercase tracking-wider">
+                            Continue
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- SCREEN 2: RESULTS (Hidden by default) -->
+            <div id="screen-results" class="hidden p-8 pt-12 h-full flex-col fade-in bg-gray-50">
+                <div class="flex items-center mb-6">
+                    <button onclick="navigateTo('search')" class="text-gray-600 hover:text-gray-900 mr-4">
+                        <i class="fas fa-arrow-left text-xl"></i>
+                    </button>
+                    <h2 class="text-2xl font-bold text-gray-800">Available Flights</h2>
+                </div>
+
+                <div class="space-y-4 overflow-y-auto pb-20">
+                    <!-- Mock Result 1 -->
+                    <div class="bg-white p-4 rounded-lg shadow border border-gray-200">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="font-bold text-lg">10:00 AM</span>
+                            <span class="text-gray-500 text-sm">2h 30m</span>
+                            <span class="font-bold text-lg">12:30 PM</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-600">LHR <i class="fas fa-plane mx-1 text-xs"></i> JFK</span>
+                            <span class="font-bold text-blue-600">$450</span>
+                        </div>
+                    </div>
+
+                    <!-- Mock Result 2 -->
+                    <div class="bg-white p-4 rounded-lg shadow border border-gray-200">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="font-bold text-lg">02:15 PM</span>
+                            <span class="text-gray-500 text-sm">2h 45m</span>
+                            <span class="font-bold text-lg">05:00 PM</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-600">LHR <i class="fas fa-plane mx-1 text-xs"></i> JFK</span>
+                            <span class="font-bold text-blue-600">$520</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Mock Result 3 -->
+                    <div class="bg-white p-4 rounded-lg shadow border border-gray-200">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="font-bold text-lg">06:00 PM</span>
+                            <span class="text-gray-500 text-sm">2h 30m</span>
+                            <span class="font-bold text-lg">08:30 PM</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-600">LHR <i class="fas fa-plane mx-1 text-xs"></i> JFK</span>
+                            <span class="font-bold text-blue-600">$380</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+
+        <!-- Bottom Home Button Area (Visual only) -->
+        <div class="hidden sm:flex h-16 bg-white border-t border-gray-100 items-center justify-center shrink-0">
+            <div class="w-12 h-12 rounded-full border-2 border-gray-300"></div>
+        </div>
+    </div>
+
+    <!-- Navigation Logic -->
+    <script>
+        function navigateTo(screenName) {
+            const searchScreen = document.getElementById('screen-search');
+            const resultsScreen = document.getElementById('screen-results');
+
+            if (screenName === 'results') {
+                searchScreen.classList.add('hidden');
+                resultsScreen.classList.remove('hidden');
+            } else {
+                resultsScreen.classList.add('hidden');
+                searchScreen.classList.remove('hidden');
+            }
+        }
+    </script>
+
+    <!-- REMOTE AUDIT AGENT SCRIPT -->
+    <style>
+      .audit-highlight { 
+        outline: 4px solid #6366f1 !important; 
+        outline-offset: 2px !important;
+        transition: outline 0.2s ease-in-out;
+        box-shadow: 0 0 15px rgba(99, 102, 241, 0.5) !important;
+      }
+    </style>
+    <script>
+      window.addEventListener('message', (event) => {
+        const { type, targetSelector, text, actionId } = event.data;
+        
+        const findElement = (selector, searchText) => {
+          if (selector) {
+            try {
+              const el = document.querySelector(selector);
+              if (el) return el;
+            } catch(e) {}
+          }
+          const interactives = Array.from(document.querySelectorAll('button, a, input, label, [role="button"], summary, select, textarea'));
+          return interactives.find(el => 
+            el.innerText?.toLowerCase().includes((searchText || selector || '').toLowerCase()) ||
+            el.placeholder?.toLowerCase().includes((searchText || selector || '').toLowerCase()) ||
+            el.name?.toLowerCase().includes((searchText || selector || '').toLowerCase()) ||
+            el.getAttribute('aria-label')?.toLowerCase().includes((searchText || selector || '').toLowerCase())
+          );
+        };
+
+        const element = findElement(targetSelector, text);
+
+        if (type === 'GET_COORDS') {
+          const target = element || document.body;
+          const rect = target.getBoundingClientRect();
+          window.parent.postMessage({ 
+            type: 'COORDS_RESPONSE', 
+            actionId,
+            coords: { 
+              x: rect.left + rect.width / 2, 
+              y: rect.top + rect.height / 2 
+            } 
+          }, '*');
+          return;
+        }
+
+        if (!element) return;
+
+        element.classList.add('audit-highlight');
+        setTimeout(() => element.classList.remove('audit-highlight'), 1000);
+
+        if (type === 'CLICK') {
+          element.focus();
+          const clickEvent = new MouseEvent('click', { bubbles: true, cancelable: true, view: window });
+          element.dispatchEvent(clickEvent);
+          if (typeof element.click === 'function') element.click();
+        } else if (type === 'TYPE') {
+          element.focus();
+          element.value = text || '';
+          element.dispatchEvent(new Event('input', { bubbles: true }));
+          element.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+      });
+    </script>
+</body>
+</html>
